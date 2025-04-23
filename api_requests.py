@@ -6,7 +6,9 @@ NUTRITIONIX_BASE_URL = "https://trackapi.nutritionix.com/v2"
 
 
 async def _safe_request(
-    method: str, url: str, **kwargs: dict,
+    method: str,
+    url: str,
+    **kwargs: dict,
 ) -> dict:
     async with AsyncClient() as client:
         try:
@@ -16,7 +18,7 @@ async def _safe_request(
                 response = await client.post(url, **kwargs)
             else:
                 raise ValueError(f"Unsupported method: {method}")
-            
+
             response.raise_for_status()
             return response.json()
 

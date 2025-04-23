@@ -1,3 +1,5 @@
+from typing import Union
+
 from mcp.server.fastmcp import Context
 from mcp.types import CallToolResult, TextContent
 
@@ -16,7 +18,7 @@ from utils import (
 
 
 @mcp.tool()
-async def get_exercise_calories_burned(query: str, ctx: Context) -> str:
+async def get_exercise_calories_burned(query: str, ctx: Context) -> Union[str, CallToolResult]:
     """Get estimated exercise calories burned from natural language input.
     It would be good to provide age, gender, weight in kg and height in cm.
 
@@ -32,14 +34,14 @@ async def get_exercise_calories_burned(query: str, ctx: Context) -> str:
     except NutritionixAPIError as e:
         return CallToolResult(
             isError=True,
-            content=[TextContent(type="text", text=f"Nutritioninx API Error {e}")],
+            content=[TextContent(type="text", text=f"Nutritionix API Error {e}")],
         )
 
     return prepare_exercise_message(data)
 
 
 @mcp.tool()
-async def get_food_nutrition(query: str, ctx: Context) -> str:
+async def get_food_nutrition(query: str, ctx: Context) -> Union[str, CallToolResult]:
     """Get detailed nutritional information from a natural language food query.
 
     Args:
@@ -52,14 +54,14 @@ async def get_food_nutrition(query: str, ctx: Context) -> str:
     except NutritionixAPIError as e:
         return CallToolResult(
             isError=True,
-            content=[TextContent(type="text", text=f"Nutritioninx API Error {e}")],
+            content=[TextContent(type="text", text=f"Nutritionix API Error {e}")],
         )
 
     return prepare_food_nutrition_message(data)
 
 
 @mcp.tool()
-async def search_food(query: str, ctx: Context) -> str:
+async def search_food(query: str, ctx: Context) -> Union[str, CallToolResult]:
     """Search for common and branded food items.
 
     Args:
@@ -72,7 +74,7 @@ async def search_food(query: str, ctx: Context) -> str:
     except NutritionixAPIError as e:
         return CallToolResult(
             isError=True,
-            content=[TextContent(type="text", text=f"Nutritioninx API Error {e}")],
+            content=[TextContent(type="text", text=f"Nutritionix API Error {e}")],
         )
 
     return prepare_search_instant_food_message(data)

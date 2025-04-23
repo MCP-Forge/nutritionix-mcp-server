@@ -18,13 +18,35 @@ With this MCP server, AI models can:
 
 ---
 
-## 🚀 How to Run
+# 🚀 How to Run
 
-> 🛠️ **Coming soon:** Full setup and run instructions will be added here, including:
-- Required dependencies
-- API key setup (`--app-id`, `--app-key`)
-- CLI usage examples
-- MCP protocol transport details (e.g. `stdio`, `http`)
+To use this MCP server, you'll need:
+
+## ✅ Prerequisites
+
+- Python 3.11+
+- [`uv`](https://github.com/astral-sh/uv) – a modern Python package manager
+- A supported LLM (e.g., Claude)
+- A Nutritionix API App ID and App Key – get them at [developer.nutritionix.com](https://developer.nutritionix.com)
+
+## Add this to Claude Desktop config
+
+```json
+{
+  "mcpServers": {
+    "nutritionix-mcp": {
+      "command": "uvx",
+      "args": [
+        "nutritionix-mcp-server",
+        "--app-id",
+        "YOUR APP ID",
+        "--app-key",
+        "YOUR APP KEY"
+      ]
+    }
+  }
+}
+```
 
 ---
 

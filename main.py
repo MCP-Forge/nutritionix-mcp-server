@@ -41,6 +41,41 @@ mcp = FastMCP("Nutritionix MCP App", lifespan=app_lifespan)
 
 
 @mcp.tool()
+async def get_food_nutrition(query: str, ctx: Context) -> str:
+    """Get detailed nutritional information from a natural language food query.
+
+    Args:
+        query: A sentence or phrase describing the food (e.g. "1 egg and 2 slices of toast")
+    """
+    url = f"{NUTRITIONIX_BASE_URL}/natural/nutrients"
+    headers = ctx.request_context.lifespan_context.get_headers()
+    payload = {"query": query}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, headers=headers, json=payload)
+
+    if response.status_code != 200:
+        return f"Failed to get nutrition info: {response.status_code} - {response.text}"
+
+    data = response.json()
+    results = []
+
+    for food in data.get("foods", []):
+        results.append(
+            f"""
+            🍽️ {food['food_name'].title()}
+                Serving: {food['serving_qty']} {food['serving_unit']} ({food['serving_weight_grams']}g)
+                Calories: {food['nf_calories']} kcal
+                Protein: {food['nf_protein']}g
+                Carbs: {food['nf_total_carbohydrate']}g
+                Fat: {food['nf_total_fat']}g
+            """
+        )
+
+    return "\n".join(results) if results else "No nutrition data found."
+
+
+@mcp.tool()
 async def search_food(query: str, ctx: Context) -> str:
     """Search for common and branded food items.
 

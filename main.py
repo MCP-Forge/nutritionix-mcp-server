@@ -41,6 +41,43 @@ mcp = FastMCP("Nutritionix MCP App", lifespan=app_lifespan)
 
 
 @mcp.tool()
+async def get_exercise_nutrition(query: str, ctx: Context) -> str:
+    """Get estimated exercise calories burned from natural language input.
+    It would be good to provide age, gender, weight in kg and height in cm.
+
+    Args:
+        query: Description of exercise (e.g. "ran 3 miles and biked for 30 minutes")
+    """
+    url = f"{NUTRITIONIX_BASE_URL}/natural/exercise"
+    headers = {
+        **ctx.request_context.lifespan_context.get_headers(),
+        "Content-Type": "application/json",
+    }
+    payload = {"query": query}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, headers=headers, json=payload)
+
+    if response.status_code != 200:
+        return f"Failed to get exercise data: {response.status_code} - {response.text}"
+
+    data = response.json()
+    results = []
+
+    for exercise in data.get("exercises", []):
+        results.append(
+            f"""
+            🏃 {exercise['name'].title()}
+                Duration: {exercise['duration_min']} min
+                Calories Burned: {exercise['nf_calories']} kcal
+                MET: {exercise.get('met', 'N/A')}
+            """
+        )
+
+    return "\n".join(results) if results else "No exercise data found."
+
+
+@mcp.tool()
 async def get_food_nutrition(query: str, ctx: Context) -> str:
     """Get detailed nutritional information from a natural language food query.
 

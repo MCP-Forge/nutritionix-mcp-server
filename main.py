@@ -41,7 +41,7 @@ mcp = FastMCP("Nutritionix MCP App", lifespan=app_lifespan)
 
 
 @mcp.tool()
-async def get_exercise_nutrition(query: str, ctx: Context) -> str:
+async def get_exercise_calories_burned(query: str, ctx: Context) -> str:
     """Get estimated exercise calories burned from natural language input.
     It would be good to provide age, gender, weight in kg and height in cm.
 
